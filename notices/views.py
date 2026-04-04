@@ -20,7 +20,7 @@ class NoticiasCreateView(APIView):
     # permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = NoticiasSerializer(data=request.data)
+        serializer = NoticiasSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -43,20 +43,20 @@ class NoticiasDetalhesView(APIView):
         if pk:
             noticia = self.get_object(pk)
             if noticia:
-                serializer = NoticiasSerializer(noticia)
+                serializer = NoticiasSerializer(noticia, context={'request': request})
                 return Response(serializer.data)
             return Response({"message": "Notícia não encontrada"}, status=status.HTTP_404_NOT_FOUND)
         
-        noticias = Noticias.objects.all()
+        noticias = Noticias.objects.all().order_by('-created_at')
         
-        serializer = NoticiasSerializer(noticias, many=True)
+        serializer = NoticiasSerializer(noticias, many=True, context={'request': request})
         
         return Response(serializer.data)
     
     def put(self, request, pk):
         
         noticia = self.get_object(pk)
-        serializer = NoticiasSerializer(noticia, data=request.data)
+        serializer = NoticiasSerializer(noticia, data=request.data, context={'request': request})
         
         if serializer.is_valid():
             serializer.save()
