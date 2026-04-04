@@ -1,0 +1,49 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">Patrocinadores</h2>
+        <a href="{% url 'admin_sponsor_add' %}" class="mobile-gradient text-white px-4 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+            + Cadastrar
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th class="p-4 border-b">ID</th>
+                    <th class="p-4 border-b">Nome</th>
+                    <th class="p-4 border-b">Link</th>
+                    <th class="p-4 border-b">Cadastrado em</th>
+                    <th class="p-4 border-b">Última edição</th>
+                    <th class="p-4 border-b w-24">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in patrocinadores %}
+                <tr class="hover:bg-gray-100 border-b last:border-0">
+                    <td class="p-4 text-gray-800">{{ p.id }}</td>
+                    <td class="p-4 text-gray-800 font-medium">{{ p.nome }}</td>
+                    <td class="p-4 text-blue-500"><a href="{{ p.link }}" target="_blank" class="hover:underline">{{ p.link }}</a></td>
+                    <td class="p-4 text-gray-500 text-sm">{{ p.created_at|date:"d/m/Y H:i" }}</td>
+                    <td class="p-4 text-gray-500 text-sm">{{ p.updated_at|date:"d/m/Y H:i" }}</td>
+                    <td class="p-4 align-middle">
+                        <div class="flex gap-3 items-center">
+                            <a href="{% url 'admin_sponsor_edit' p.id %}" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">Editar</a>
+                            <form action="{% url 'admin_sponsor_delete' p.id %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="button" onclick="openDeleteModal(this.parentElement, 'o patrocinador \'{{ p.nome|escapejs }}\'')" class="bg-red-600 text-white px-3 py-1 rounded font-semibold text-sm hover:bg-red-700 transition shadow">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="p-4 text-center text-gray-500">Nenhum patrocinador encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

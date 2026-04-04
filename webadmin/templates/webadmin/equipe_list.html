@@ -1,0 +1,52 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">Equipe</h2>
+    <a href="{% url 'admin_equipe_add' %}" class="mobile-gradient text-white px-4 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+        + Adicionar
+    </a>
+</div>
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="p-4 border-b w-24 text-center">Foto</th>
+                <th class="p-4 border-b">Membro</th>
+                <th class="p-4 border-b text-center w-48">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in equipe %}
+            <tr class="hover:bg-gray-100 border-b last:border-0">
+                <td class="p-4 text-center">
+                    {% if item.foto %}
+                    <img src="{{ item.foto.url }}" alt="{{ item.nome }}" class="h-16 w-16 object-cover rounded-full border-2 border-[#0AC7BE] shadow mx-auto">
+                    {% else %}
+                    <div class="h-16 w-16 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-400 mx-auto">?</div>
+                    {% endif %}
+                </td>
+                <td class="p-4">
+                    <div class="font-bold text-[#0051BA] text-lg">{{ item.nome }}</div>
+                    <div class="text-sm text-gray-500 line-clamp-2 mt-1">{{ item.descricao }}</div>
+                </td>
+                <td class="p-4 align-middle">
+                    <div class="flex justify-center items-center gap-3">
+                        <a href="{% url 'admin_equipe_edit' item.pk %}" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">Editar</a>
+                        <form action="{% url 'admin_equipe_delete' item.pk %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="button" onclick="openDeleteModal(this.parentElement, '{{ item.nome }} da Equipe')" class="bg-red-600 text-white px-3 py-1 rounded font-semibold text-sm hover:bg-red-700 transition shadow">Excluir</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="px-6 py-8 text-center text-gray-500">Nenhum membro cadastrado na equipe.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

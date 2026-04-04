@@ -1,0 +1,56 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            {% if is_edit %}Editar Patrocinador{% else %}Novo Patrocinador{% endif %}
+        </h2>
+        <a href="{% url 'admin_sponsors_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200 border group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Voltar
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="flex flex-col">
+            <label class="font-medium text-gray-700 mb-1">{{ field.label }}</label>
+
+            {% if is_edit and field.name == 'imagem_app' and form.instance.imagem_app %}
+            <div class="mb-2 flex items-center gap-3 p-2 bg-gray-50 border rounded w-fit">
+                <span class="text-sm text-gray-500">Arquivo atual:</span>
+                <a href="{{ form.instance.imagem_app.url }}" target="_blank"
+                    class="text-blue-500 hover:underline text-sm truncate max-w-[200px]">{{
+                    form.instance.imagem_app.name }}</a>
+            </div>
+            {% elif is_edit and field.name == 'imagem_site' and form.instance.imagem_site %}
+            <div class="mb-2 flex items-center gap-3 p-2 bg-gray-50 border rounded w-fit">
+                <span class="text-sm text-gray-500">Arquivo atual:</span>
+                <a href="{{ form.instance.imagem_site.url }}" target="_blank"
+                    class="text-blue-500 hover:underline text-sm truncate max-w-[200px]">{{
+                    form.instance.imagem_site.name }}</a>
+            </div>
+            {% endif %}
+
+            {{ field }}
+            {% if field.help_text %}
+            <span class="text-gray-500 text-xs mt-1">{{ field.help_text }}</span>
+            {% endif %}
+            {% if field.errors %}
+            <span class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="pt-4">
+            <button type="submit"
+                class="mobile-gradient text-white px-8 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+                Salvar Patrocinador
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">Notícias</h2>
+        <a href="{% url 'admin_noticia_add' %}" class="mobile-gradient text-white px-4 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+            + Cadastrar
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-200 text-gray-700">
+                    <th class="p-4 border-b">ID</th>
+                    <th class="p-4 border-b">Título</th>
+                    <th class="p-4 border-b">Cadastrado em</th>
+                    <th class="p-4 border-b">Última edição</th>
+                    <th class="p-4 border-b">Por</th>
+                    <th class="p-4 border-b w-40 text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in noticias %}
+                <tr class="hover:bg-gray-100 border-b last:border-0">
+                    <td class="p-4 text-gray-800">{{ n.id }}</td>
+                    <td class="p-4 text-gray-800 font-medium">{{ n.titulo }}</td>
+                    <td class="p-4 text-gray-500 text-sm">{{ n.created_at|date:"d/m/Y H:i" }}</td>
+                    <td class="p-4 text-gray-500 text-sm">{{ n.updated_at|date:"d/m/Y H:i" }}</td>
+                    <td class="p-4 text-gray-600 text-sm">
+                        {% if n.updated_by %}
+                            <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-medium">{{ n.updated_by.username }}</span>
+                        {% else %}
+                            <span class="text-gray-400 italic">Sistema</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-4 align-middle">
+                        <div class="flex gap-3 items-center justify-center">
+                            <a href="{% url 'admin_noticia_edit' n.id %}" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">Editar</a>
+                            <form action="{% url 'admin_noticia_delete' n.id %}" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="button" onclick="openDeleteModal(this.parentElement, 'a notícia \'{{ n.titulo|escapejs }}\'')" class="bg-red-600 text-white px-3 py-1 rounded font-semibold text-sm hover:bg-red-700 transition shadow">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="p-4 text-center text-gray-500">Nenhuma notícia encontrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

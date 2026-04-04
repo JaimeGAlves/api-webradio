@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dimúsica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .mobile-gradient {
+            background: linear-gradient(to bottom, #0AC7BE, #0A7DD1, #0051BA, #0A24D1, #2D0AC7);
+        }
+
+        .btn-mobile-gradient {
+            background: linear-gradient(to right, #0AC7BE, #0A7DD1, #0051BA, #0A24D1, #2D0AC7);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex">
+
+    {% if user.is_authenticated %}
+    <aside class="mobile-gradient text-white w-64 flex-shrink-0 flex flex-col min-h-screen shadow-2xl relative z-10">
+        <div class="p-6 border-b border-white/20 flex justify-center items-center">
+            <a href="{% url 'admin_dashboard' %}" class="block">
+                <img src="{% static 'webadmin/images/logo-branco-icon.png' %}" alt="Dimúsica Logo"
+                    class="h-20 w-auto object-contain hover:scale-105 transition-transform duration-300">
+            </a>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2 mt-6">
+            <a href="{% url 'admin_dashboard' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Visão
+                Geral</a>
+            <a href="{% url 'admin_pedidos_list' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Pedidos
+                de Música</a>
+            <a href="{% url 'admin_noticias_list' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Gerenciar
+                Notícias</a>
+            <a href="{% url 'admin_sponsors_list' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Gerenciar
+                Patrocinadores</a>
+            <a href="{% url 'admin_programacao_list' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Gerenciar
+                Programação</a>
+            <a href="{% url 'admin_equipe_list' %}"
+                class="block px-4 py-3 rounded-lg font-medium hover:bg-white/20 transition-all duration-200">Gerenciar
+                Equipe</a>
+        </nav>
+
+        <div class="p-6 border-t border-white/20">
+            <form action="{% url 'admin_logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full bg-white text-[#0A24D1] px-4 py-3 rounded-lg font-bold shadow-lg hover:bg-gray-200 transition-all duration-200 hover:scale-105 active:scale-95">
+                    Sair
+                </button>
+            </form>
+        </div>
+    </aside>
+    {% endif %}
+
+    <!-- Wrapper do Conteúdo -->
+    <div class="flex-1 flex flex-col min-w-0 max-h-screen overflow-hidden">
+        <!-- Main Content -->
+        <main class="flex-grow p-8 overflow-y-auto">
+            {% block content %}{% endblock %}
+        </main>
+
+        {% if user.is_authenticated %}
+        <footer class="p-4 text-center text-gray-500 text-sm border-t">
+            &copy; 2026 Webradio Dimusica.
+        </footer>
+        {% endif %}
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 transform scale-95 opacity-0 transition-all duration-300"
+            id="deleteModalContent">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Confirmar Exclusão</h3>
+            <p class="text-gray-600 mb-6" id="deleteModalMessage">Tem certeza que deseja excluir este item?</p>
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="closeDeleteModal()"
+                    class="px-5 py-2.5 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-colors">Cancelar</button>
+                <button type="button" onclick="confirmDelete()"
+                    class="px-5 py-2.5 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors shadow">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts utilitários -->
+    <script>
+        let currentDeleteForm = null;
+
+        function openDeleteModal(formElement, itemName) {
+            currentDeleteForm = formElement;
+            const modal = document.getElementById('deleteModal');
+            const modalContent = document.getElementById('deleteModalContent');
+            const message = document.getElementById('deleteModalMessage');
+
+            message.textContent = `Você tem certeza que deseja excluir permanentemente ${itemName}? Esta ação não pode ser desfeita.`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteModal');
+            const modalContent = document.getElementById('deleteModalContent');
+
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                currentDeleteForm = null;
+            }, 300);
+        }
+
+        function confirmDelete() {
+            if (currentDeleteForm) {
+                currentDeleteForm.submit();
+            }
+        }
+    </script>
+</body>
+
+</html>
