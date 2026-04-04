@@ -28,30 +28,35 @@
             </div>
         {% endfor %}
 
-        {% if is_edit and form.instance.imagens.all %}
-        <div class="mt-8 p-4 bg-gray-50 rounded border">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Imagens Atuais da Notícia</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {% for img in form.instance.imagens.all %}
-                <div class="border rounded bg-white p-2 flex flex-col items-center justify-between">
-                    <img src="{{ img.imagem.url }}" class="h-24 w-full object-contain mb-3" alt="">
-                    <form action="{% url 'admin_noticia_imagem_delete' img.id %}" method="post" class="w-full text-center border-t pt-2">
-                        {% csrf_token %}
-                        <button type="button" onclick="openDeleteModal(this.parentElement, 'esta imagem da galeria')" class="text-red-600 font-semibold text-sm hover:text-red-800">
-                            Excluir Imagem
-                        </button>
-                    </form>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-        
         <div class="pt-4">
             <button type="submit" class="mobile-gradient text-white px-8 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
                 Salvar Notícia
             </button>
         </div>
     </form>
+
+    {% if is_edit and form.instance.imagens.all %}
+    <div class="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
+        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            Imagens Atuais da Galeria
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {% for img in form.instance.imagens.all %}
+            <div class="border rounded-lg bg-white p-2 flex flex-col items-center justify-between shadow-sm hover:shadow-md transition-shadow">
+                <div class="h-24 w-full overflow-hidden rounded mb-3 bg-gray-100 flex items-center justify-center">
+                    <img src="{{ img.imagem.url }}" class="h-full w-full object-cover" alt="">
+                </div>
+                <form action="{% url 'admin_noticia_imagem_delete' img.id %}" method="post" class="w-full text-center border-t pt-2">
+                    {% csrf_token %}
+                    <button type="button" onclick="openDeleteModal(this.parentElement, 'esta imagem da galeria')" class="text-red-600 font-semibold text-sm hover:text-red-800 transition-colors">
+                        Excluir Imagem
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
