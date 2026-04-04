@@ -1,0 +1,39 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            {% if is_edit %}Editar Programa{% else %}Novo Programa{% endif %}
+        </h2>
+        <a href="{% url 'admin_programacao_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200 border group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Voltar
+        </a>
+    </div>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="flex flex-col">
+            <label class="font-medium text-gray-700 mb-1">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <span class="text-gray-500 text-xs mt-1">{{ field.help_text }}</span>
+            {% endif %}
+            {% if field.errors %}
+            <span class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="pt-4">
+            <button type="submit"
+                class="mobile-gradient text-white px-8 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+                Salvar Programação
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

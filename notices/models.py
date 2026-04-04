@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -8,6 +9,8 @@ class Noticias(models.Model):
     conteudo = models.TextField(blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='noticias_criadas')
+    updated_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='noticias_editadas')
 
     def __str__(self):
         return self.titulo

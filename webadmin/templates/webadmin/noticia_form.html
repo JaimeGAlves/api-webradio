@@ -1,0 +1,57 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            {% if is_edit %}Editar Notícia{% else %}Nova Notícia{% endif %}
+        </h2>
+        <a href="{% url 'admin_noticias_list' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-all duration-200 border group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Voltar
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="flex flex-col">
+                <label class="font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <span class="text-gray-500 text-xs mt-1">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                    <span class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if is_edit and form.instance.imagens.all %}
+        <div class="mt-8 p-4 bg-gray-50 rounded border">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Imagens Atuais da Notícia</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for img in form.instance.imagens.all %}
+                <div class="border rounded bg-white p-2 flex flex-col items-center justify-between">
+                    <img src="{{ img.imagem.url }}" class="h-24 w-full object-contain mb-3" alt="">
+                    <form action="{% url 'admin_noticia_imagem_delete' img.id %}" method="post" class="w-full text-center border-t pt-2">
+                        {% csrf_token %}
+                        <button type="button" onclick="openDeleteModal(this.parentElement, 'esta imagem da galeria')" class="text-red-600 font-semibold text-sm hover:text-red-800">
+                            Excluir Imagem
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="pt-4">
+            <button type="submit" class="mobile-gradient text-white px-8 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
+                Salvar Notícia
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

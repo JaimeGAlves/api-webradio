@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'core',
     'sponsors',
     'notices',
+    'webadmin',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -128,8 +129,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-LOGIN_REDIRECT_URL = 'sponsor_list'  # URL para redirecionar após login bem-sucedido
-LOGOUT_REDIRECT_URL = 'login'  # URL para redirecionar após logout
+LOGIN_REDIRECT_URL = 'admin_dashboard'  # URL para redirecionar após login bem-sucedido
+LOGOUT_REDIRECT_URL = 'admin_login'  # URL para redirecionar após logout
+LOGIN_URL = 'admin_login'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

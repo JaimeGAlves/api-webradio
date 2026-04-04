@@ -1,0 +1,61 @@
+{% extends 'webadmin/base.html' %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">Mural de Pedidos de Música</h2>
+</div>
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-gray-200 text-gray-700">
+                <th class="p-4 border-b">Ouvinte</th>
+                <th class="p-4 border-b">Pedido do Ouvinte</th>
+                <th class="p-4 border-b">Data / Hora</th>
+                <th class="p-4 border-b text-center">Status</th>
+                <th class="p-4 border-b text-center w-48">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pedido in pedidos %}
+            <tr class="hover:bg-gray-100 border-b last:border-0">
+                <td class="p-4 text-gray-800 font-medium">{{ pedido.nome_ouvinte }}</td>
+                <td class="p-4">
+                    <span class="font-bold text-[#0051BA]">{{ pedido.pedido }}</span>
+                </td>
+                <td class="p-4 text-sm text-gray-500">{{ pedido.criado_em|date:"d/m/Y H:i" }}</td>
+                <td class="p-4 align-middle">
+                    <div class="flex items-center justify-center text-center">
+                        {% if pedido.lido %}
+                        <span class="w-24 py-1.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">Concluído</span>
+                        {% else %}
+                        <span class="w-24 py-1.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full animate-pulse">Aguardando</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="p-4 align-middle">
+                    <div class="flex items-center justify-center gap-3">
+                        <form action="{% url 'admin_pedido_marcar_lido' pedido.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="w-24 py-1.5 bg-[#0AC7BE] text-white rounded text-xs font-bold hover:bg-[#079992] transition shadow-sm">
+                                {% if pedido.lido %}Desfazer{% else %}Concluir{% endif %}
+                            </button>
+                        </form>
+                        <form action="{% url 'admin_pedido_delete' pedido.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="button" onclick="openDeleteModal(this.parentElement, 'este pedido')"
+                                class="w-20 py-1.5 bg-red-600 text-white rounded text-xs font-bold hover:bg-red-700 transition shadow-sm">Excluir</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-gray-500">Nenhum pedido de música recebido ainda.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
