@@ -1,24 +1,92 @@
-{% extends 'webadmin/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrativo - Dimúsica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0051BA',
+                        teal: '#0AC7BE',
+                        dark: '#0e1217',
+                        'dark-lighter': '#1a1f26',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .btn-gradient {
+            background: linear-gradient(135deg, #0051BA 0%, #0AC7BE 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-dark">
+    <div class="fixed inset-0 flex items-center justify-center p-6">
+        <!-- Fundo decorativo -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #0AC7BE 1px, transparent 0); background-size: 32px 32px;"></div>
+        <div class="absolute top-1/4 -left-20 w-80 h-80 bg-teal/20 blur-[100px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-primary/20 blur-[100px] rounded-full animate-pulse delay-700"></div>
 
-{% block content %}
-<div class="max-w-md mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Acesso ao Painel</h2>
-    
-    {% if form.errors %}
-    <p class="text-red-500 text-sm mb-4">Seu nome de usuário ou senha estão incorretos. Tente novamente.</p>
-    {% endif %}
+        <div class="w-full max-w-sm relative z-10">
+            <!-- Logo -->
+            <div class="flex justify-center mb-10">
+                <img src="{% static 'webadmin/images/logo-branco-icon.png' %}" alt="Dimúsica Logo" class="h-24 w-auto drop-shadow-2xl">
+            </div>
 
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <div>
-            <label class="block text-gray-700 font-medium mb-1" for="id_username">Usuário</label>
-            <input type="text" name="username" id="id_username" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]" required>
+            <!-- Card de Login (Claro) -->
+            <div class="bg-white p-8 rounded-[40px] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+                <h2 class="text-2xl font-black text-gray-900 mb-1 text-center uppercase tracking-tight">Painel Admin</h2>
+                <p class="text-gray-500 text-sm text-center mb-8">Digite suas credenciais de acesso.</p>
+                
+                {% if form.errors %}
+                <div class="bg-red-50 text-red-600 p-4 rounded-2xl text-xs font-bold mb-6 border border-red-100">
+                    Usuário ou senha incorretos. Verifique e tente novamente.
+                </div>
+                {% endif %}
+
+                <form method="post" class="space-y-5">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1" for="id_username">Usuário</label>
+                        <input type="text" name="username" id="id_username" 
+                               class="w-full px-5 py-4 bg-gray-50 border border-gray-100 focus:border-teal/50 focus:bg-white rounded-2xl focus:outline-none focus:ring-4 focus:ring-teal/5 transition-all text-gray-800 font-medium" 
+                               placeholder="Seu usuário" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2 ml-1" for="id_password">Senha</label>
+                        <input type="password" name="password" id="id_password" 
+                               class="w-full px-5 py-4 bg-gray-50 border border-gray-100 focus:border-teal/50 focus:bg-white rounded-2xl focus:outline-none focus:ring-4 focus:ring-teal/5 transition-all text-gray-800 font-medium" 
+                               placeholder="********" required>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button type="submit" 
+                                class="w-full btn-gradient text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-teal/30 active:scale-95">
+                            Acessar Painel
+                        </button>
+                        <div class="text-center mt-6">
+                            <span class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">Webradio Dimúsica &copy; 2026</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div>
-            <label class="block text-gray-700 font-medium mb-1" for="id_password">Senha</label>
-            <input type="password" name="password" id="id_password" class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]" required>
-        </div>
-        <button type="submit" class="w-full mobile-gradient text-white py-2 rounded-lg font-semibold shadow-md hover:opacity-90 transition">Login</button>
-    </form>
-</div>
-{% endblock %}
+    </div>
+</body>
+</html>

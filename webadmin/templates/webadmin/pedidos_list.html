@@ -1,61 +1,104 @@
 {% extends 'webadmin/base.html' %}
 
-{% block content %}
-<div class="flex justify-between items-center mb-8">
-    <h2 class="text-3xl font-bold text-gray-800">Mural de Pedidos de Música</h2>
-</div>
+{% block page_title %}Mural de Pedidos{% endblock %}
 
-<div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <table class="w-full text-left border-collapse">
-        <thead>
-            <tr class="bg-gray-200 text-gray-700">
-                <th class="p-4 border-b">Ouvinte</th>
-                <th class="p-4 border-b">Pedido do Ouvinte</th>
-                <th class="p-4 border-b">Data / Hora</th>
-                <th class="p-4 border-b text-center">Status</th>
-                <th class="p-4 border-b text-center w-48">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pedido in pedidos %}
-            <tr class="hover:bg-gray-100 border-b last:border-0">
-                <td class="p-4 text-gray-800 font-medium">{{ pedido.nome_ouvinte }}</td>
-                <td class="p-4">
-                    <span class="font-bold text-[#0051BA]">{{ pedido.pedido }}</span>
-                </td>
-                <td class="p-4 text-sm text-gray-500">{{ pedido.criado_em|date:"d/m/Y H:i" }}</td>
-                <td class="p-4 align-middle">
-                    <div class="flex items-center justify-center text-center">
-                        {% if pedido.lido %}
-                        <span class="w-24 py-1.5 bg-green-100 text-green-700 text-xs font-bold rounded-full">Concluído</span>
-                        {% else %}
-                        <span class="w-24 py-1.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full animate-pulse">Aguardando</span>
-                        {% endif %}
-                    </div>
-                </td>
-                <td class="p-4 align-middle">
-                    <div class="flex items-center justify-center gap-3">
-                        <form action="{% url 'admin_pedido_marcar_lido' pedido.pk %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit"
-                                class="w-24 py-1.5 bg-[#0AC7BE] text-white rounded text-xs font-bold hover:bg-[#079992] transition shadow-sm">
-                                {% if pedido.lido %}Desfazer{% else %}Concluir{% endif %}
-                            </button>
-                        </form>
-                        <form action="{% url 'admin_pedido_delete' pedido.pk %}" method="post">
-                            {% csrf_token %}
-                            <button type="button" onclick="openDeleteModal(this.parentElement, 'este pedido')"
-                                class="w-20 py-1.5 bg-red-600 text-white rounded text-xs font-bold hover:bg-red-700 transition shadow-sm">Excluir</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" class="px-6 py-8 text-center text-gray-500">Nenhum pedido de música recebido ainda.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Pedidos de Música</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Interaja com os ouvintes e gerencie as solicitações em tempo real.</p>
+        </div>
+    </div>
+
+    <!-- Tabela de Pedidos -->
+    <div class="bg-white dark:bg-dark-lighter rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400">
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5">Ouvinte</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5">Solicitação</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 hidden md:table-cell">Data / Hora</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 text-center">Status</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                    {% for pedido in pedidos %}
+                    <tr class="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                        <td class="p-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-teal/10 text-teal flex items-center justify-center font-black uppercase text-xs shrink-0">
+                                    {{ pedido.nome_ouvinte|first }}
+                                </div>
+                                <span class="text-gray-800 dark:text-white font-bold">{{ pedido.nome_ouvinte }}</span>
+                            </div>
+                        </td>
+                        <td class="p-5">
+                            <div class="max-w-xs sm:max-w-md">
+                                <span class="bg-primary/5 text-primary dark:text-teal dark:bg-teal/5 px-3 py-1.5 rounded-lg text-sm font-semibold break-words inline-block border border-primary/10 dark:border-teal/10">
+                                    {{ pedido.pedido }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="p-5 hidden md:table-cell">
+                             <div class="flex flex-col text-[10px] text-gray-500 dark:text-gray-400">
+                                <span class="font-bold">{{ pedido.criado_em|date:"d/m/Y" }}</span>
+                                <span>{{ pedido.criado_em|date:"H:i" }}</span>
+                            </div>
+                        </td>
+                        <td class="p-5">
+                            <div class="flex justify-center">
+                                {% if pedido.lido %}
+                                <span class="flex items-center gap-1.5 px-3 py-1 bg-green-100/50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-full">
+                                    <span class="w-1.5 h-1.5 bg-green-600 dark:bg-green-400 rounded-full"></span>
+                                    Lido
+                                </span>
+                                {% else %}
+                                <span class="flex items-center gap-1.5 px-3 py-1 bg-yellow-100/50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 text-[10px] font-black uppercase tracking-widest rounded-full animate-pulse">
+                                    <span class="w-1.5 h-1.5 bg-yellow-600 dark:bg-yellow-400 rounded-full"></span>
+                                    Pendente
+                                </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="p-5">
+                            <div class="flex items-center justify-center gap-2">
+                                <form action="{% url 'admin_pedido_marcar_lido' pedido.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="px-4 py-2 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-teal hover:text-dark transition-all border border-transparent hover:border-teal/20"
+                                        title="Marcar como lido">
+                                        {% if pedido.lido %}Voltar{% else %}Atender{% endif %}
+                                    </button>
+                                </form>
+                                <form action="{% url 'admin_pedido_delete' pedido.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="button" onclick="openDeleteModal(this.parentElement, 'o pedido de {{ pedido.nome_ouvinte|escapejs }}')"
+                                        class="p-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Excluir">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-16 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center text-gray-300">
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" /></svg>
+                                </div>
+                                <p class="text-gray-500 dark:text-gray-400 font-medium">Nenhum pedido recebido ainda. O ouvinte ainda não se manifestou! 🎧</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
