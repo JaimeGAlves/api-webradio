@@ -1,21 +1,91 @@
-# API Webradio
+# 📡 API WebRádio Dimúsica
 
-Bem-vindo ao repositório do **API Webradio**!
-Este projeto é uma API backend robusta desenvolvida em Django e Django Rest Framework (DRF) para dar suporte a uma aplicação de Web Rádio completa. Além de fornecer endpoints para o gerenciamento de notícias e patrocinadores com autenticação JWT, o projeto agora conta com um **Painel Administrativo Moderno** (TailwindCSS) e recursos de **Interatividade com Ouvintes** (Pedidos de Música, Grade de Programação e Equipe).
+O **API WebRádio** é o motor central (backend) desenvolvido em **Django** e **Django Rest Framework (DRF)**, projetado para gerenciar conteúdos de forma robusta e segura para todo o ecossistema Dimúsica (Portal Web e Aplicativo Mobile).
 
-## Documentação
+Este projeto fornece uma interface administrativa moderna e uma API escalável com autenticação **JWT**, garantindo que as notícias, patrocinadores e a interatividade com os ouvintes sejam entregues com rapidez e segurança.
 
-Toda a documentação técnica foi dividida em arquivos específicos na pasta `docs/` para melhor organização:
+---
 
-- [Configuração e Execução Local](docs/setup.md): Instruções passo a passo sobre como instalar as dependências, configurar o ambiente virtual e rodar o projeto na sua máquina.
-- [Modelos e Banco de Dados](docs/models.md): Detalhes sobre os modelos de dados utilizados no projeto (Notícias, Patrocinadores, Pedidos, Grade de Programação, Equipe).
-- [Endpoints da API](docs/api_endpoints.md): Lista e descrição de todos os endpoints disponíveis na aplicação, incluindo rotas de autenticação, notícias, patrocinadores e recursos interativos.
-- [Arquitetura do Ecossistema](docs/architecture.md): Visão técnica detalhada de como a API gerencia e entrega dados para o App Mobile e o Site.
+## 🚀 Highlights Técnicos
 
-## Tecnologias Utilizadas
+- **Django 5.x & DRF:** Core robusto para gestão de dados e criação de endpoints RESTful.
+- **Painel Administrativo Moderno:** Customizado com **TailwindCSS** para uma experiência de gestão fluida.
+- **Segurança (Simple JWT):** Autenticação baseada em tokens para integração segura com dispositivos mobile.
+- **Gestão de Mídia (Pillow):** Processamento e otimização automática de imagens para notícias e patrocinadores.
+- **Arquitetura Escalável:** Pronto para migração de SQLite para PostgreSQL/MySQL em ambiente de produção.
 
-- **Python & Django** (Framework Backend)
-- **Django Rest Framework** (Construção da API)
-- **Simple JWT** (Autenticação baseada em tokens JWT)
-- **Pillow** (Processamento de Imagens)
-- **SQLite3** (Banco de dados padrão)
+---
+
+## 🛠️ Principais Recursos
+
+### 📰 Gestão de Conteúdo
+- **Módulo de Notícias:** Suporte a múltiplas imagens, categorias e formatação rica.
+- **Patrocinadores:** Gerenciamento de marcas parceiras com controle de visibilidade.
+
+### 🎙️ Interatividade e Programação
+- **Grade de Programação:** Agendamento flexível de programas por dia e horário.
+- **Pedidos de Música:** Endpoint dedicado para capturar interações de ouvintes em tempo real.
+- **Gestão de Equipe:** Perfil completo de locutores e colaboradores com fotos e biografias.
+
+---
+
+## 📂 Estrutura do Projeto
+
+```text
+api-webradio/
+├── core/           # App principal: modelos globais e lógica de negócio
+├── notices/        # Módulo especializado em notícias e mídia
+├── sponsors/       # Módulo de gestão de patrocinadores e parceiros
+├── webadmin/       # Customizações do painel administrativo
+├── settings/       # Configurações globais e de ambiente (Django Settings)
+├── media/          # Armazenamento de uploads (notícias, fotos)
+└── manage.py       # Utilitário de gerenciamento do Django
+```
+
+---
+
+## ⚙️ Guia de Instalação e Execução
+
+### 1. Requisitos
+- Python 3.10 ou superior
+- Pip (Gerenciador de pacotes)
+
+### 2. Configuração do Ambiente
+```bash
+# Clone o projeto
+# Crie um ambiente virtual
+python -m venv venv
+
+# Ative o ambiente (Windows)
+.\venv\Scripts\activate
+
+# Instale as dependências
+pip install -r requirements.txt
+```
+
+### 3. Banco de Dados e Superusuário
+```bash
+# Rode as migrações
+python manage.py migrate
+
+# Crie um administrador
+python manage.py createsuperuser
+```
+
+### 4. Executando o Servidor
+```bash
+python manage.py runserver
+```
+Acesse o painel em: `http://127.0.0.1:8000/admin`
+
+---
+
+## 📱 Integração Mobile
+A API disponibiliza rotas sob o prefixo `/api/v1/`, protegidas por JWT. Consulte a documentação técnica em `docs/api_endpoints.md` para detalhes dos contratos de dados.
+
+---
+> [!TIP]
+> Em ambiente de desenvolvimento, utilize o `db.sqlite3` incluído. Para produção, recomendamos a configuração de variáveis de ambiente no arquivo `.env` para apontar para um banco PostgreSQL.
+
+---
+© {% now "Y" %} **Web Rádio Dimúsica** - A qualidade que se ouve.

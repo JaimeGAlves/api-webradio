@@ -8,8 +8,15 @@ class PedidoMusicaSerializer(serializers.ModelSerializer):
         read_only_fields = ['criado_em']
 
 class ProgramacaoSerializer(serializers.ModelSerializer):
-    locutor_name = serializers.CharField(source='locutor.nome', read_only=True)
-    
+    locutor_name = serializers.SerializerMethodField()
+    dia_semana_display = serializers.SerializerMethodField()
+
+    def get_locutor_name(self, obj):
+        return obj.locutor.nome if obj.locutor else None
+
+    def get_dia_semana_display(self, obj):
+        return obj.get_dia_semana_display()
+
     class Meta:
         model = Programacao
         fields = ['id', 'dia_semana', 'dia_semana_display', 'horario_inicio', 'horario_fim', 'nome_programa', 'locutor', 'locutor_name']
