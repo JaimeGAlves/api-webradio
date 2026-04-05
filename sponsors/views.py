@@ -92,14 +92,22 @@ class PatrocinadoresSiteView(APIView):
     # permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        patrocinadores = list(Patrocinador.objects.order_by('id'))
+        patrocinadores = list(Patrocinador.objects.all())
+        if not patrocinadores:
+            return Response([])
+            
         patrocinadores_randomizados = random.sample(patrocinadores, len(patrocinadores))
-        imagens_urls = [
-            request.build_absolute_uri(patrocinador.imagem_site.url)
+        dados = [
+            {
+                "imagem": request.build_absolute_uri(patrocinador.imagem_site.url),
+                "imagem_app": request.build_absolute_uri(patrocinador.imagem_app.url) if patrocinador.imagem_app else None,
+                "link": patrocinador.link,
+                "nome": patrocinador.nome
+            }
             for patrocinador in patrocinadores_randomizados
         ]
 
-        return Response(imagens_urls)
+        return Response(dados)
 
 # from django.shortcuts import render, redirect, get_object_or_404
 # from django.views import View
