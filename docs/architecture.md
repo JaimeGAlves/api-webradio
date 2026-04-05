@@ -40,9 +40,10 @@ graph TD
 
 ### 1. Camada de Gerenciamento (`webadmin`)
 Implementada em Django puro com TailwindCSS para performance e estética premium. Esta camada é responsável por:
-- **Dashboard**: Visão geral de pedidos e notícias.
-- **Formulários Ricos**: Cadastro de notícias com múltiplos uploads e seleção dinâmica de equipe na programação.
-- **Autenticação de Sessão**: Protege o acesso de gestores à interface visual.
+- **Dashboard**: Visão geral de métricas, pedidos e notícias em tempo real.
+- **Formulários Ricos**: Cadastro de notícias com múltiplos uploads e gestão inteligente de dias da semana (M2M) na programação.
+- **Integração com Modo Escuro**: Suporte estético completo no painel via Tailwind CSS.
+- **Autenticação de Sessão**: Protege o acesso de gestores à interface visual de alta fidelidade.
 
 ### 2. Camada de API (`DRF`)
 Utiliza o Django Rest Framework para expor os dados aos satélites (App/Site):

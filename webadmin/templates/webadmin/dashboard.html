@@ -56,14 +56,84 @@
         <div class="bg-dark rounded-3xl p-8 border border-white/5 shadow-2xl relative overflow-hidden flex flex-col justify-center">
             <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
             <div class="relative z-10">
-                <h3 class="text-white font-bold text-xl mb-6 text-center italic tracking-tight">Atalhos</h3>
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-teal"></span>
+                    </span>
+                    <h3 class="text-white font-bold text-xl italic tracking-tight">Ouvintes Agora</h3>
+                </div>
+                <p class="text-5xl font-black text-center text-teal mb-6">{{ current_listeners }}</p>
                 <div class="grid grid-cols-1 gap-2">
-                    <a href="{% url 'admin_pedidos_list' %}" class="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-teal hover:text-dark transition-all text-white font-black uppercase text-[10px] tracking-widest text-center shadow-lg shadow-teal/5">Pedidos</a>
-                    <a href="{% url 'admin_noticia_add' %}" class="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-teal hover:text-dark transition-all text-white font-black uppercase text-[10px] tracking-widest text-center shadow-lg shadow-teal/5">Nova Notícia</a>
-                    <a href="{% url 'admin_programacao_list' %}" class="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-teal hover:text-dark transition-all text-white font-black uppercase text-[10px] tracking-widest text-center shadow-lg shadow-teal/5">Grade Completa</a>
+                    <a href="{% url 'admin_pedidos_list' %}" class="p-3 bg-white/5 rounded-xl border border-white/10 hover:bg-teal hover:text-dark transition-all text-white font-black uppercase text-[10px] tracking-widest text-center shadow-lg shadow-teal/5">Ver Pedidos ({{ pedidos_count }})</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Gráfico de Audiência -->
+    <div class="bg-white dark:bg-dark-lighter rounded-3xl p-8 border border-gray-100 dark:border-white/5 shadow-sm">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h3 class="text-xl font-black text-gray-800 dark:text-white">Ouvintes Únicos Diários</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Total de pessoas diferentes que sintonizaram a rádio - últimos 30 dias</p>
+            </div>
+            <div class="px-4 py-2 bg-teal/5 text-teal text-[10px] font-black uppercase tracking-widest rounded-lg border border-teal/10">
+                Histórico de Audiência
+            </div>
+        </div>
+        <div class="h-[300px] w-full">
+            <canvas id="audienceChart"></canvas>
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('audienceChart').getContext('2d');
+        
+        fetch('{% url "admin_api_stats" %}')
+            .then(response => response.json())
+            .then(data => {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Ouvintes Únicos',
+                            data: data.values,
+                            borderColor: '#0AC7BE',
+                            backgroundColor: 'rgba(10, 199, 190, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#0AC7BE',
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.05)' },
+                                ticks: { stepSize: 1, font: { family: 'Inter' } }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Inter' } }
+                            }
+                        }
+                    }
+                });
+            });
+    });
+</script>
 {% endblock %}

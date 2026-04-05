@@ -55,10 +55,15 @@ Registro de pedidos feitos pelos ouvintes.
 - `lido` (BooleanField) - Status de controle para o DJ
 - `criado_em` (DateTimeField, auto_now_add)
 
+### DiaSemana
+Modelo de suporte para organizar os dias da semana de forma indexada.
+- `id` (PK, Manually Assigned: 0-6) - Segue o padrão (0=Dom, 1=Seg...)
+- `nome` (CharField, max_length=20) - Ex: "Segunda-feira"
+
 ### Programacao
-Grade de horários da rádio.
+Grade de horários da rádio, agora com suporte a múltiplos dias por entrada.
 - `id` (PK)
-- `dia_semana` (IntegerChoices: 0-6)
+- `dias_semana` (ManyToManyField -> DiaSemana) - Relacionamento flexível para programas que ocorrem em vários dias (ex: Seg-Sex).
 - `horario_inicio` (TimeField)
 - `horario_fim` (TimeField)
 - `nome_programa` (CharField)

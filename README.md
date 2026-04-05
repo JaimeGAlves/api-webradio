@@ -8,11 +8,11 @@ Este projeto fornece uma interface administrativa moderna e uma API escalável c
 
 ## 🚀 Highlights Técnicos
 
-- **Django 5.x & DRF:** Core robusto para gestão de dados e criação de endpoints RESTful.
-- **Painel Administrativo Moderno:** Customizado com **TailwindCSS** para uma experiência de gestão fluida.
-- **Segurança (Simple JWT):** Autenticação baseada em tokens para integração segura com dispositivos mobile.
-- **Gestão de Mídia (Pillow):** Processamento e otimização automática de imagens para notícias e patrocinadores.
-- **Arquitetura Escalável:** Pronto para migração de SQLite para PostgreSQL/MySQL em ambiente de produção.
+- **Django 6.x & DRF:** Core de última geração para gestão de dados e criação de endpoints RESTful eficientes.
+- **Painel Administrativo Premium:** Interface totalmente revitalizada com **TailwindCSS**, focada em produtividade e estética moderna.
+- **Modo Escuro Nativo:** Suporte completo com persistência de preferência, proporcionando conforto visual ao administrador.
+- **Segurança (Simple JWT):** Autenticação robusta baseada em tokens para integração segura com dispositivos mobile.
+- **Gestão de Mídia Otimizada:** Processamento e redimensionamento inteligente de imagens para garantir performance.
 
 ---
 

@@ -20,24 +20,27 @@ class Equipe(models.Model):
     def __str__(self):
         return self.nome
 
+class DiaSemana(models.Model):
+    id = models.IntegerField(primary_key=True)  # 0-6 seguindo o padrão atual
+    nome = models.CharField(max_length=20)
+
+    class Meta:
+        ordering = ['id']
+
+    def __str__(self):
+        return self.nome
+
 class Programacao(models.Model):
-    DIAS_DA_SEMANA = [
-        (0, 'Domingo'),
-        (1, 'Segunda-feira'),
-        (2, 'Terça-feira'),
-        (3, 'Quarta-feira'),
-        (4, 'Quinta-feira'),
-        (5, 'Sexta-feira'),
-        (6, 'Sábado'),
-    ]
-    dia_semana = models.IntegerField(choices=DIAS_DA_SEMANA)
+    # Novo campo ManyToMany consolidado
+    dias_semana = models.ManyToManyField(DiaSemana, related_name='programas', blank=True)
+    
     horario_inicio = models.TimeField()
     horario_fim = models.TimeField()
     nome_programa = models.CharField(max_length=150)
     locutor = models.ForeignKey(Equipe, on_delete=models.SET_NULL, null=True, blank=True, related_name='programas')
 
     class Meta:
-        ordering = ['dia_semana', 'horario_inicio']
+        ordering = ['horario_inicio']
 
     def __str__(self):
-        return f"{self.get_dia_semana_display()} {self.horario_inicio} - {self.nome_programa}"
+        return f"{self.nome_programa} ({self.horario_inicio} - {self.horario_fim})"

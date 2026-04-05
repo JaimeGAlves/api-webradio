@@ -48,9 +48,22 @@ O projeto utiliza SQLite3 por padrão. Para criar o banco de dados e as tabelas,
 python manage.py migrate
 ```
 
-### 5. Criar um Superusuário (Opcional, mas recomendado)
+### 5. Inicializar Dados do Sistema (Importante)
+Para que a grade de programação funcione, os dias da semana devem estar cadastrados. Você pode criar um superusuário e cadastrá-los manualmente no painel ou rodar o comando abaixo no shell do Django:
 
-Para acessar o painel de administração (`/api/admin/`), crie um superusuário:
+```bash
+python manage.py shell
+```
+Dentro do shell:
+```python
+from core.models import DiaSemana
+dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
+for i, nome in enumerate(dias):
+    DiaSemana.objects.get_or_create(id=i, nome=nome)
+```
+
+### 6. Criar um Superusuário
+Para acessar o painel de administração (`/painel/`), crie um superusuário:
 
 ```bash
 python manage.py createsuperuser
