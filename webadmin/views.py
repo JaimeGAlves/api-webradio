@@ -133,7 +133,7 @@ def pedido_delete(request, pk):
 # Programacao
 @login_required(login_url='admin_login')
 def programacao_list(request):
-    programacao = Programacao.objects.all()
+    programacao = Programacao.objects.all().order_by('dia_semana', 'horario_inicio')
     return render(request, 'webadmin/programacao_list.html', {'programacao': programacao})
 
 @login_required(login_url='admin_login')

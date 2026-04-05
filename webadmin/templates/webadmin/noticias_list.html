@@ -1,55 +1,94 @@
 {% extends 'webadmin/base.html' %}
 
+{% block page_title %}Gestão de Notícias{% endblock %}
+
 {% block content %}
-<div class="flex justify-between items-center mb-8">
-    <h2 class="text-3xl font-bold text-gray-800">Notícias</h2>
-        <a href="{% url 'admin_noticia_add' %}" class="mobile-gradient text-white px-4 py-2 rounded-lg font-semibold shadow hover:opacity-90 transition">
-            + Cadastrar
+<div class="space-y-6">
+    <!-- Header da Página -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="text-2xl font-black text-gray-800 dark:text-white uppercase tracking-tight">Notícias</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Gerencie todo o conteúdo jornalístico do seu portal.</p>
+        </div>
+        <a href="{% url 'admin_noticia_add' %}" class="btn-gradient text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-teal/20 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+            Nova Notícia
         </a>
     </div>
 
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-gray-200 text-gray-700">
-                    <th class="p-4 border-b">ID</th>
-                    <th class="p-4 border-b">Título</th>
-                    <th class="p-4 border-b">Cadastrado em</th>
-                    <th class="p-4 border-b">Última edição</th>
-                    <th class="p-4 border-b">Por</th>
-                    <th class="p-4 border-b w-40 text-center">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for n in noticias %}
-                <tr class="hover:bg-gray-100 border-b last:border-0">
-                    <td class="p-4 text-gray-800">{{ n.id }}</td>
-                    <td class="p-4 text-gray-800 font-medium">{{ n.titulo }}</td>
-                    <td class="p-4 text-gray-500 text-sm">{{ n.created_at|date:"d/m/Y H:i" }}</td>
-                    <td class="p-4 text-gray-500 text-sm">{{ n.updated_at|date:"d/m/Y H:i" }}</td>
-                    <td class="p-4 text-gray-600 text-sm">
-                        {% if n.updated_by %}
-                            <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md font-medium">{{ n.updated_by.username }}</span>
-                        {% else %}
-                            <span class="text-gray-400 italic">Sistema</span>
-                        {% endif %}
-                    </td>
-                    <td class="p-4 align-middle">
-                        <div class="flex gap-3 items-center justify-center">
-                            <a href="{% url 'admin_noticia_edit' n.id %}" class="text-blue-600 hover:text-blue-800 font-semibold text-sm">Editar</a>
-                            <form action="{% url 'admin_noticia_delete' n.id %}" method="post" class="inline">
-                                {% csrf_token %}
-                                <button type="button" onclick="openDeleteModal(this.parentElement, 'a notícia \'{{ n.titulo|escapejs }}\'')" class="bg-red-600 text-white px-3 py-1 rounded font-semibold text-sm hover:bg-red-700 transition shadow">Excluir</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="p-4 text-center text-gray-500">Nenhuma notícia encontrada.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Tabela -->
+    <div class="bg-white dark:bg-dark-lighter rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400">
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5">Título e Detalhes</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 hidden md:table-cell">Temporal</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 hidden lg:table-cell">Autor</th>
+                        <th class="p-5 text-[10px] font-black uppercase tracking-widest border-b border-gray-100 dark:border-white/5 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                    {% for n in noticias %}
+                    <tr class="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors group">
+                        <td class="p-5">
+                            <div class="flex flex-col">
+                                <span class="text-gray-800 dark:text-white font-bold group-hover:text-teal transition-colors break-words">{{ n.titulo }}</span>
+                                <span class="text-[10px] text-gray-400 uppercase mt-1">{{ n.subtitulo|truncatechars:60 }}</span>
+                            </div>
+                        </td>
+                        <td class="p-5 hidden md:table-cell">
+                            <div class="flex flex-col gap-1.5 text-[10px]">
+                                <span class="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    <span class="font-black uppercase tracking-tighter mr-1">Criado:</span> {{ n.created_at|date:"d/m/Y H:i" }}
+                                </span>
+                                <span class="text-teal font-medium flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                    <span class="font-black uppercase tracking-tighter mr-1">Última alteração:</span> {{ n.updated_at|date:"d/m/Y H:i" }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="p-5 hidden lg:table-cell">
+                            {% if n.updated_by %}
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-teal/10 text-teal flex items-center justify-center text-[10px] font-black uppercase">
+                                        {{ n.updated_by.username|first }}
+                                    </div>
+                                    <span class="text-gray-600 dark:text-gray-400 text-sm font-medium">{{ n.updated_by.username }}</span>
+                                </div>
+                            {% else %}
+                                <span class="text-gray-400 text-xs italic">Automático</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-5">
+                            <div class="flex gap-2 items-center justify-center">
+                                <a href="{% url 'admin_noticia_edit' n.id %}" class="btn-gradient text-white p-2.5 rounded-xl shadow-lg shadow-teal/10 hover:scale-110 active:scale-95 transition-all" title="Editar">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                </a>
+                                <form action="{% url 'admin_noticia_delete' n.id %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <button type="button" onclick="openDeleteModal(this.parentElement, 'a notícia \'{{ n.titulo|escapejs }}\'')" class="p-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white transition-all shadow-sm" title="Excluir">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="p-12 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z" /></svg>
+                                <p class="text-gray-500">Nenhuma notícia encontrada.</p>
+                                <a href="{% url 'admin_noticia_add' %}" class="text-teal font-bold hover:underline">Cadastrar a primeira agora</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
+</div>
 {% endblock %}
