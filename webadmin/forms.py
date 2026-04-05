@@ -27,7 +27,7 @@ class NoticiaForm(forms.ModelForm):
     imagens = MultipleFileField(
         widget=MultipleFileInput(attrs={
             'multiple': True, 
-            'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'
+            'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'
         }), 
         required=False, 
         label="Adicionar Imagens", 
@@ -38,9 +38,9 @@ class NoticiaForm(forms.ModelForm):
         model = Noticias
         fields = ['titulo', 'subtitulo', 'conteudo']
         widgets = {
-            'titulo': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'subtitulo': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]', 'rows': 3}),
-            'conteudo': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]', 'rows': 6}),
+            'titulo': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'subtitulo': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all', 'rows': 3}),
+            'conteudo': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all', 'rows': 6}),
         }
 
 class PatrocinadorForm(forms.ModelForm):
@@ -48,22 +48,22 @@ class PatrocinadorForm(forms.ModelForm):
         model = Patrocinador
         fields = ['nome', 'link', 'imagem_app', 'imagem_site']
         widgets = {
-            'nome': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'link': forms.URLInput(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'imagem_app': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
-            'imagem_site': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
+            'nome': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'link': forms.URLInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'imagem_app': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white'}),
+            'imagem_site': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white'}),
         }
 
 class ProgramacaoForm(forms.ModelForm):
     class Meta:
         model = Programacao
-        fields = ['dia_semana', 'horario_inicio', 'horario_fim', 'nome_programa', 'locutor']
+        fields = ['dias_semana', 'horario_inicio', 'horario_fim', 'nome_programa', 'locutor']
         widgets = {
-            'dia_semana': forms.Select(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'horario_inicio': forms.TimeInput(attrs={'type': 'time', 'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'horario_fim': forms.TimeInput(attrs={'type': 'time', 'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'nome_programa': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'locutor': forms.Select(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
+            'dias_semana': forms.CheckboxSelectMultiple(attrs={'class': 'flex flex-wrap gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10'}),
+            'horario_inicio': forms.TimeInput(attrs={'type': 'time', 'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'horario_fim': forms.TimeInput(attrs={'type': 'time', 'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'nome_programa': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'locutor': forms.Select(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
         }
 
 class EquipeForm(forms.ModelForm):
@@ -71,7 +71,7 @@ class EquipeForm(forms.ModelForm):
         model = Equipe
         fields = ['nome', 'descricao', 'foto']
         widgets = {
-            'nome': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]'}),
-            'descricao': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#0A7DD1]', 'rows': 4}),
-            'foto': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
+            'nome': forms.TextInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all'}),
+            'descricao': forms.Textarea(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal/50 transition-all', 'rows': 4}),
+            'foto': forms.FileInput(attrs={'class': 'w-full px-4 py-2 border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white'}),
         }

@@ -5,16 +5,48 @@ from django.contrib import messages
 from core.models import PedidoMusica, Programacao, Equipe
 from notices.models import Noticias, Imagem
 from sponsors.models import Patrocinador
+from analytics.models import ListenerStat
 from .forms import NoticiaForm, PatrocinadorForm, ProgramacaoForm, EquipeForm
+from django.http import JsonResponse
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Max
+from django.db.models.functions import TruncDate
 
 @login_required(login_url='admin_login')
 def dashboard(request):
     noticias_count = Noticias.objects.count()
     sponsors_count = Patrocinador.objects.count()
+    pedidos_count = PedidoMusica.objects.count()
+    
+    # Pegar estatísticas atuais
+    last_stat = ListenerStat.objects.first()
+    current_listeners = last_stat.count if last_stat else 0
+    
     return render(request, 'webadmin/dashboard.html', {
         'noticias_count': noticias_count,
         'sponsors_count': sponsors_count,
+        'pedidos_count': pedidos_count,
+        'current_listeners': current_listeners,
     })
+
+@login_required(login_url='admin_login')
+def listener_stats_api(request):
+    # Retorna o total de ouvintes únicos por dia nos últimos 30 dias
+    period = timezone.now() - timedelta(days=30)
+    
+    # Agrupar por dia e pegar o valor máximo de ouvintes únicos (total acumulado no dia)
+    stats = ListenerStat.objects.filter(timestamp__gte=period) \
+        .annotate(date=TruncDate('timestamp')) \
+        .values('date') \
+        .annotate(total_unique=Max('unique_count')) \
+        .order_by('date')
+    
+    data = {
+        'labels': [s['date'].strftime('%d/%m') for s in stats],
+        'values': [s['total_unique'] for s in stats],
+    }
+    return JsonResponse(data)
 
 @login_required(login_url='admin_login')
 def noticias_list(request):
@@ -133,8 +165,24 @@ def pedido_delete(request, pk):
 # Programacao
 @login_required(login_url='admin_login')
 def programacao_list(request):
-    programacao = Programacao.objects.all().order_by('dia_semana', 'horario_inicio')
-    return render(request, 'webadmin/programacao_list.html', {'programacao': programacao})
+    # Buscamos todos os programas e seus dias associados
+    programas = Programacao.objects.all().prefetch_related('dias_semana').order_by('horario_inicio')
+    
+    # Criamos uma lista achatada para que o template consiga agrupar por dia corretamente
+    # Um programa que passa em 3 dias aparecerá 3 vezes na lista (uma em cada seção de dia)
+    programacao_flat = []
+    for p in programas:
+        for dia in p.dias_semana.all():
+            programacao_flat.append({
+                'dia_id': dia.id,
+                'dia_nome': dia.nome,
+                'detalhes': p
+            })
+    
+    # Ordenamos a lista final por ID do dia (0-6) e depois por horário
+    programacao_flat.sort(key=lambda x: (x['dia_id'], x['detalhes'].horario_inicio))
+    
+    return render(request, 'webadmin/programacao_list.html', {'programacao_flat': programacao_flat})
 
 @login_required(login_url='admin_login')
 def programacao_form(request, pk=None):

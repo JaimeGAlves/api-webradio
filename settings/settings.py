@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'sponsors',
     'notices',
     'webadmin',
+    'analytics',
 ]
 
 MIDDLEWARE = [

@@ -36,4 +36,7 @@ urlpatterns = [
     path('equipe/novo/', views.equipe_form, name='admin_equipe_add'),
     path('equipe/<int:pk>/editar/', views.equipe_form, name='admin_equipe_edit'),
     path('equipe/<int:pk>/excluir/', views.equipe_delete, name='admin_equipe_delete'),
+    
+    # Analytics API
+    path('api/stats/', views.listener_stats_api, name='admin_api_stats'),
 ]
